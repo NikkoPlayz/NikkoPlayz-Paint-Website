@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NikkoPlayz Paint Website</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(34,34,34,1) 100%);
+        height: 100vh;
+        overflow-y: scroll;
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .background-stars {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        background: url('https://cdn.pixabay.com/photo/2019/12/18/14/08/background-4706845_960_720.jpg');
+        animation: twinkling 10s infinite;
+        z-index: -1;
+    }
+    .content {
+        padding: 20px;
+        position: relative;
+        z-index: 1;
+    }
+    .logo {
+        width: 200px;
+        height: 200px;
+        border: 4px solid #cccccc;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-bottom: 20px;
+        background: #ffffff;
+        display: inline-block;
+    }
+    .logo img {
+        width: 100%;
+        height: auto;
+    }
+    .button {
+        margin-top: 20px;
+        padding: 15px 30px;
+        background-color: #000000;
+        color: #ffffff;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        font-size: 18px;
+        cursor: pointer;
+        display: inline-block;
+    }
+    .button.subscribe {
+        background-color: #ff0000;
+    }
+    .sub-text {
+        color: #ffffff;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+    .paint-section {
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        color: #ffffff;
+        width: 100%;
+        text-align: center;
+        margin-top: 50px;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        position: relative;
+        top: 100px;
+    }
+    .paint-section.visible {
+        opacity: 1;
+    }
+    #canvas {
+        border: 5px solid;
+        border-image: linear-gradient(to bottom, #000000, #444444) 1;
+        background: #ffffff;
+        cursor: crosshair;
+        margin: 20px auto;
+    }
+    .tools {
+        margin: 20px 0;
+    }
+    .tool-button, .color-button, .gradient-button {
+        margin: 5px;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .tool-button {
+        background-color: #000000;
+        color: #ffffff;
+    }
+    .color-button {
+        width: 30px;
+        height: 30px;
+        display: inline-block;
+        border-radius: 50%;
+        border: 1px solid #000000;
+    }
+    .color-red { background-color: red; }
+    .color-green { background-color: green; }
+    .color-blue { background-color: blue; }
+    .color-yellow { background-color: yellow; }
+    .color-purple { background-color: purple; }
+    .color-cyan { background-color: cyan; }
+    .color-darkblack { background-color: #000000; }
+    .color-white { background-color: #ffffff; }
+    .color-pink { background-color: pink; }
+    .color-lime { background-color: lime; }
+    .gradient-section {
+        margin: 20px 0;
+    }
+    .gradient-button {
+        width: 60px;
+        height: 30px;
+        display: inline-block;
+        border-radius: 5px;
+        border: 1px solid #000000;
+    }
+    .gradient-black-white { background: linear-gradient(to right, #000000, #ffffff); }
+    .gradient-blue-green { background: linear-gradient(to right, #0000ff, #00ff00); }
+    .gradient-red-pink { background: linear-gradient(to right, #ff0000, #ff69b4); }
+    .gradient-pink-purple { background: linear-gradient(to right, #ff69b4, #800080); }
+    .text-input {
+        margin-top: 10px;
+        padding: 5px;
+        width: 80%;
+        font-size: 16px;
+        color: #000000;
+    }
+    .resize-button {
+        padding: 5px 10px;
+        background: linear-gradient(to right, #00008b, #000000);
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 5px;
+    }
+    @keyframes twinkling {
+        0% { opacity: 0.4; }
+        50% { opacity: 1; }
+        100% { opacity: 0.4; }
+    }
+</style>
+</head>
+<body>
+    <div class="background-stars"></div>
+    <div class="content">
+        <div class="logo">
+            <img src="https://nikkoplayz.carrd.co/assets/images/image01.jpg?v=317bbc81" alt="NikkoPlayz Logo">
+        </div>
+        <div class="sub-text">Welcome to my Paint site</div>
+        <a class="button subscribe" href="https://youtube.com/@TheNikkoPlayz" target="_blank">Subscribe to my YT!</a>
+        <a class="button" href="#paint" id="paintButton">Paint</a>
+    </div>
+
+    <div class="paint-section" id="paint">
+        <h1>Paint</h1>
+        <div class="tools">
+            <button class="tool-button" id="brushTool">Brush</button>
+            <button class="tool-button" id="bucketTool">Bucket</button>
+            <button class="tool-button" id="clearCanvas">Clear</button>
+            <input type="text" id="textInput" class="text-input" placeholder="Enter text here" />
+            <button class="tool-button resize-button" id="addText">Add Text</button>
+        </div>
+        <div>
+            <button class="color-button color-red" id="colorRed"></button>
+            <button class="color-button color-green" id="colorGreen"></button>
+            <button class="color-button color-blue" id="colorBlue"></button>
+            <button class="color-button color-yellow" id="colorYellow"></button>
+            <button class="color-button color-purple" id="colorPurple"></button>
+            <button class="color-button color-cyan" id="colorCyan"></button>
+            <button class="color-button color-darkblack" id="colorDarkBlack"></button>
+            <button class="color-button color-white" id="colorWhite"></button>
+            <button class="color-button color-pink" id="colorPink"></button>
+            <button class="color-button color-lime" id="colorLime"></button>
+        </div>
+        <div class="gradient-section">
+            <button class="gradient-button gradient-black-white" id="gradientBlackWhite"></button>
+            <button class="gradient-button gradient-blue-green" id="gradientBlueGreen"></button>
+            <button class="gradient-button gradient-red-pink" id="gradientRedPink"></button>
+            <button class="gradient-button gradient-pink-purple" id="gradientPinkPurple"></button>
+        </div>
+        <canvas id="canvas" width="800" height="600"></canvas>
+    </div>
+
+    <script>
+        document.querySelector('#paintButton').addEventListener('click', function(event) {
+            event.preventDefault();
+            document.querySelector('#paint').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        function handleScroll() {
+            const paintSection = document.querySelector('#paint');
+            const sectionPosition = paintSection.getBoundingClientRect().top;
+            const viewportHeight = window.innerHeight;
+
+            if (sectionPosition < viewportHeight) {
+                paintSection.classList.add('visible');
+            }
+        }
+
+        handleScroll();
+        window.addEventListener('scroll', handleScroll);
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let currentColor = '#000000'; 
+        let currentTool = 'brush';
+        let textInput = document.getElementById('textInput');
+        let textObjects = [];
+
+        function startDrawing(e) {
+            isDrawing = true;
+            ctx.beginPath();
+        }
+
+        function endDrawing() {
+            isDrawing = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            if (currentTool === 'brush') {
+                ctx.lineTo(x, y);
+                ctx.stroke();
+            } else if (currentTool === 'bucket') {
+                fillCanvas(currentColor);
+            }
+        }
+
+        function changeColor(color) {
+            currentColor = color;
+        }
+
+        function setTool(tool) {
+            currentTool = tool;
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function fillCanvas(color) {
+            canvas.style.background = color;
+        }
+
+        function addText() {
+            const text = textInput.value;
+            if (text.trim() === '') return;
+
+            const textSize = prompt('Enter text size (e.g., 30px):', '30px');
+            ctx.font = `${textSize} Arial`;
+            ctx.fillStyle = currentColor;
+            ctx.fillText(text, 50, 50); 
+
+            textObjects.push({
+                text: text,
+                size: textSize,
+                color: currentColor,
+                x: 50,
+                y: 50
+            });
+        }
+
+        function drawText() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            textObjects.forEach(textObj => {
+                ctx.font = `${textObj.size} Arial`;
+                ctx.fillStyle = textObj.color;
+                ctx.fillText(textObj.text, textObj.x, textObj.y);
+            });
+        }
+
+        function resizeText() {
+            const text = textInput.value;
+            const newSize = prompt('Enter new text size (e.g., 30px):', '30px');
+            const index = textObjects.findIndex(t => t.text === text);
+            if (index !== -1) {
+                textObjects[index].size = newSize;
+                drawText();
+            }
+        }
+
+        document.getElementById('canvas').addEventListener('mousedown', startDrawing);
+        document.getElementById('canvas').addEventListener('mouseup', endDrawing);
+        document.getElementById('canvas').addEventListener('mousemove', draw);
+
+        document.getElementById('brushTool').addEventListener('click', () => setTool('brush'));
+        document.getElementById('bucketTool').addEventListener('click', () => setTool('bucket'));
+        document.getElementById('clearCanvas').addEventListener('click', clearCanvas);
+        document.getElementById('addText').addEventListener('click', addText);
+
+        document.getElementById('colorRed').addEventListener('click', () => changeColor('#ff0000'));
+        document.getElementById('colorGreen').addEventListener('click', () => changeColor('#00ff00'));
+        document.getElementById('colorBlue').addEventListener('click', () => changeColor('#0000ff'));
+        document.getElementById('colorYellow').addEventListener('click', () => changeColor('#ffff00'));
+        document.getElementById('colorPurple').addEventListener('click', () => changeColor('#800080'));
+        document.getElementById('colorCyan').addEventListener('click', () => changeColor('#00ffff'));
+        document.getElementById('colorDarkBlack').addEventListener('click', () => changeColor('#000000'));
+        document.getElementById('colorWhite').addEventListener('click', () => changeColor('#ffffff'));
+        document.getElementById('colorPink').addEventListener('click', () => changeColor('#ff69b4'));
+        document.getElementById('colorLime').addEventListener('click', () => changeColor('#00ff00'));
+
+        document.getElementById('gradientBlackWhite').addEventListener('click', () => fillCanvas('linear-gradient(to right, #000000, #ffffff)'));
+        document.getElementById('gradientBlueGreen').addEventListener('click', () => fillCanvas('linear-gradient(to right, #0000ff, #00ff00)'));
+        document.getElementById('gradientRedPink').addEventListener('click', () => fillCanvas('linear-gradient(to right, #ff0000, #ff69b4)'));
+        document.getElementById('gradientPinkPurple').addEventListener('click', () => fillCanvas('linear-gradient(to right, #ff69b4, #800080)'));
+
+        document.getElementById('resizeButton').addEventListener('click', resizeText);
+    </script>
+</body>
+</html>
